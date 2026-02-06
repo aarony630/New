@@ -1,13 +1,40 @@
-% MATLAB Script: Simplified 3D Point Cloud Comparison
-% Compare two datasets and visualize movement delta
+% MATLAB Script: 3D Point Cloud Comparison with Delta Visualization
+% This script can be run directly or called as a function
 
+% Clear workspace when running as script
+clear; clc; close all;
+
+% Generate sample data
+fprintf('Generating sample data...\n');
+n = 80;
+
+% Create first point cloud (sphere-like distribution)
+theta = 2*pi*rand(n,1);
+phi = acos(2*rand(n,1)-1);
+r = 5 + randn(n,1)*0.5;
+
+X1 = r .* sin(phi) .* cos(theta);
+Y1 = r .* sin(phi) .* sin(theta);
+Z1 = r .* cos(phi);
+
+% Create second point cloud with some directional movement
+movement_magnitude = 2;
+X2 = X1 + randn(n,1) * movement_magnitude + 0.5;
+Y2 = Y1 + randn(n,1) * movement_magnitude;
+Z2 = Z1 + randn(n,1) * movement_magnitude - 0.3;
+
+% Run the comparison
+scatter3_delta_comparison(X1, Y1, Z1, X2, Y2, Z2);
+
+%% Function Definition
 function scatter3_delta_comparison(X1, Y1, Z1, X2, Y2, Z2)
+% SCATTER3_DELTA_COMPARISON Compare two 3D point clouds and visualize movement
+%
 % INPUTS:
 %   X1, Y1, Z1 - Coordinates of first point cloud
 %   X2, Y2, Z2 - Coordinates of second point cloud (corresponding points)
 %
 % EXAMPLE USAGE:
-%   % Generate sample data
 %   n = 100;
 %   X1 = randn(n,1) * 5;
 %   Y1 = randn(n,1) * 5;
@@ -22,7 +49,7 @@ function scatter3_delta_comparison(X1, Y1, Z1, X2, Y2, Z2)
         error('Point clouds must have the same number of points');
     end
     
-    % Calculate movement delta
+    % Calculate movement delta (Euclidean distance)
     delta = sqrt((X2 - X1).^2 + (Y2 - Y1).^2 + (Z2 - Z1).^2);
     
     % Create main figure
@@ -111,29 +138,4 @@ function scatter3_delta_comparison(X1, Y1, Z1, X2, Y2, Z2)
     fprintf('Min delta: %.4f\n', min(delta));
     fprintf('====================================\n\n');
     
-end
-
-%% If running as standalone script (not a function), generate sample data
-if ~exist('X1', 'var')
-    % Generate sample data
-    fprintf('Generating sample data...\n');
-    n = 80;
-    
-    % Create first point cloud (sphere-like distribution)
-    theta = 2*pi*rand(n,1);
-    phi = acos(2*rand(n,1)-1);
-    r = 5 + randn(n,1)*0.5;
-    
-    X1 = r .* sin(phi) .* cos(theta);
-    Y1 = r .* sin(phi) .* sin(theta);
-    Z1 = r .* cos(phi);
-    
-    % Create second point cloud with some directional movement
-    movement_magnitude = 2;
-    X2 = X1 + randn(n,1) * movement_magnitude + 0.5;
-    Y2 = Y1 + randn(n,1) * movement_magnitude;
-    Z2 = Z1 + randn(n,1) * movement_magnitude - 0.3;
-    
-    % Run the comparison
-    scatter3_delta_comparison(X1, Y1, Z1, X2, Y2, Z2);
 end
